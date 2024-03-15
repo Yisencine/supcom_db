@@ -2,7 +2,6 @@ import json, os, sqlite3, traceback
 
 TARGET_DATABASE_FILE = "supcom.db"
 
-
 def unformatted_units(connection):
 
 	'''just an example function to showcase how bad the table looks without any formatting'''
