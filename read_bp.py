@@ -2,15 +2,17 @@ import json, os, sqlite3, traceback
 
 TARGET_DATABASE_FILE = "supcom.db"
 
-def unformatted_units(connection):
+def add_bp_to_db(connection, bp):
 
-	'''just an example function to showcase how bad the table looks without any formatting'''
-
-	cursor = connection.cursor()
-	query = "SELECT * FROM Units_T1_Land)"
-	cursor.execute(query)
-	results = cursor.fetchall()
-	print(results)
+	try:
+		cursor = connection.cursor()
+		query = "INSERT INTO Units_T1_Land(Name, Health, DPS, Mass_Cost, Energy_Cost, Range, Speed, Faction_ID) VALUES (?,?,?,?,?,?,?,?)"
+		cursor.execute(query, (bp.name, bp.health, bp.DPS, bp.mass_cost, bp.energy_cost, bp.range, bp.speed, bp.faction_ID))
+		connection.commit()
+		print("\n Units (BP) were added successfully to database!\n")
+	except Exception as error:
+		traceback.print_exc()
+		print("\nUh oh, couldn't ADD_BP_TO_DB, something went wrong!")
 
 # its like a template which you can fill lots of data into, when you know there's gonna be a lot of files using the same variables as each other.
 # you make instances with the "self." structure and can access and manipulate them more easily than a dictonary. You can also define methods within. Classes are great!
@@ -25,6 +27,13 @@ class Blueprint:
 		"A": "Aeon",
 		"S": "Seraphim"
 	}
+	FACTION_IDS = {
+		"Unknown": 0,
+		"UEF": 1,
+		"Cybran": 2,
+		"Aeon": 3,
+		"Seraphim": 4,
+	}
 	UNIT_TYPE = { #3rd character of unit code
 		"L": "Land",
 		"A": "Air",
@@ -36,8 +45,12 @@ class Blueprint:
 		self.code = file_name.split("_")[0]
 		if self.code[1] in self.FACTIONS.keys():
 			self.faction = self.FACTIONS[self.code[1]]
+
 		else:
 			self.faction = "Unknown"
+
+		self.faction_ID = self.FACTION_IDS[self.faction]
+
 		if self.code[2] in self.UNIT_TYPE.keys():
 			self.unit_type = self.UNIT_TYPE[self.code[2]]
 		else:
@@ -57,7 +70,7 @@ class Blueprint:
 		self.damage = -1
 		self.rof = -1
 		self.is_engi = False
-
+		self.faction_ID
 
 		#open the files based on the OS that the user is using, in read mode rather than write mode
 		with open(os.path.join(file_path, file_name), "r") as f:
@@ -143,14 +156,16 @@ class Blueprint:
 		return value
 
 	def __repr__(self):
-		return f"{self.code} ({self.faction} {self.name}): {self.mass_cost} mass, {self.energy_cost} energy, {self.health}HP, {self.speed} Speed, {self.DPS}DPS, {self.range} Range, Tech {self.tech_level}, {self.field}."
+		return f"{self.code} ({self.faction} {self.name}): {self.mass_cost} mass, {self.energy_cost} energy, {self.health}HP, {self.speed} Speed, {self.DPS}DPS, {self.range} Range, Tech {self.tech_level}, {self.field}, {self.faction_ID}."
 
 def main():
+	
 	blueprint_path = "bps"
 
 	all_bps = dict()
 
 	blueprint_names = os.listdir(blueprint_path)
+
 	for bp_name in blueprint_names:
 		bp = Blueprint(blueprint_path, bp_name)
 		
@@ -165,7 +180,13 @@ def main():
 			all_bps[bp.code] = bp
 			print(bp)
 
-	#print(all_bps["UEL0001"].name)
+	with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
+
+		for bp in all_bps.values():
+			if bp.tech_level == 1 and bp.unit_type == "Land" and bp.is_engi == False or bp.name == "Point Defense" and bp.tech_level == 1:
+				add_bp_to_db(connection, bp)
+
+		#print(all_bps["UEL0001"].name)
 
 if __name__ == "__main__":
 	main()
