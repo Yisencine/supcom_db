@@ -6,10 +6,10 @@ def add_bp_to_db(connection, bp):
 
 	try:
 		cursor = connection.cursor()
-		query = "INSERT INTO Units_T1_Land(Name, Health, DPS, Mass_Cost, Energy_Cost, Range, Speed, Faction_ID) VALUES (?,?,?,?,?,?,?,?)"
-		cursor.execute(query, (bp.name, bp.health, bp.DPS, bp.mass_cost, bp.energy_cost, bp.range, bp.speed, bp.faction_ID))
-		connection.commit()
-		print("\n Units (BP) were added successfully to database!\n")
+		# query = "INSERT INTO Units_T1_Land(Name, Health, DPS, Mass_Cost, Energy_Cost, Range, Speed, Faction_ID) VALUES (?,?,?,?,?,?,?,?)"
+		# cursor.execute(query, (bp.faction + " " + bp.name, bp.health, bp.DPS, bp.mass_cost, bp.energy_cost, bp.range, bp.speed, bp.faction_ID))
+		# connection.commit()
+		# print("\n Units (BP) were added successfully to database!\n")
 	except Exception as error:
 		traceback.print_exc()
 		print("\nUh oh, couldn't ADD_BP_TO_DB, something went wrong!")
@@ -70,6 +70,7 @@ class Blueprint:
 		self.damage = -1
 		self.rof = -1
 		self.is_engi = False
+		self.is_test_unit = False
 		self.faction_ID
 
 		#open the files based on the OS that the user is using, in read mode rather than write mode
@@ -133,6 +134,9 @@ class Blueprint:
 				#print(self.damage)
 
 				self.damage = float(self.value_from_line(line))
+
+			elif "test unit" in self.name.lower():
+				self.is_test_unit = True
 			
 
 			elif line.startswith("RateOfFire = ") and not line.startswith("RateOfFire = {"):
@@ -175,7 +179,7 @@ def main():
 		# 	print(bp)
 		#if bp.faction == "UEF":
 
-		if bp.tech_level == 1 and bp.unit_type == "Land" and bp.is_engi == False or bp.name == "Point Defense" and bp.tech_level == 1:
+		if bp.tech_level == 1 and bp.unit_type == "Land" and bp.is_engi == False and bp.is_test_unit == False or bp.name == "Point Defense" and bp.tech_level == 1:
 		#if bp.faction == "UEF" and "Experimental" in bp.name:
 			all_bps[bp.code] = bp
 			print(bp)
