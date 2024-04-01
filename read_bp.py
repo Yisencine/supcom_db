@@ -3,6 +3,7 @@ import json, os, sqlite3, traceback
 TARGET_DATABASE_FILE = "supcom.db"
 
 def add_bp_to_db(connection, bp):
+# this query adds the chosen info from the dataset into the sql database for us to work with in there
 
 	try:
 		cursor = connection.cursor()
@@ -89,6 +90,8 @@ class Blueprint:
 					self.name = name
 				except IndexError:
 					self.name = desc
+
+			# all of these elif statements scan the file for information/statistics which can then be assigned to variables and used within the class
 			elif line.startswith("BuildCostEnergy"):
 				self.energy_cost = int(self.value_from_line(line))
 			elif line.startswith("BuildCostMass"):
@@ -107,7 +110,7 @@ class Blueprint:
 		
 				self.tech_level = int(line[5])
 
-			#this is because several files randomly use single quotes instead of double quotes
+			#this extra elif statement is because several files randomly use single quotes instead of double quotes
 			elif line.startswith("\'TECH") and len(line) < 12:
 				#the len < 12 used to be len < 8 idk why it kinda broke - the given lines are less than 8 char. and it worked before?
 				self.tech_level = int(line[5])
@@ -164,6 +167,8 @@ class Blueprint:
 
 def main():
 	
+	# the following lines locate and scan the database files (where we are extracting the data values from)
+
 	blueprint_path = "bps"
 
 	all_bps = dict()
@@ -185,6 +190,8 @@ def main():
 			print(bp)
 
 	with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
+
+		# makes the connection to the chosen database file and then prints all the units chosen through a filter
 
 		for bp in all_bps.values():
 			if bp.tech_level == 1 and bp.unit_type == "Land" and bp.is_engi == False or bp.name == "Point Defense" and bp.tech_level == 1:
