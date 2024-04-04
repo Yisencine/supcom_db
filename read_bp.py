@@ -7,13 +7,45 @@ def add_bp_to_db(connection, bp):
 
 	try:
 		cursor = connection.cursor()
-		# query = "INSERT INTO Units_T1_Land(Name, Health, DPS, Mass_Cost, Energy_Cost, Range, Speed, Faction_ID) VALUES (?,?,?,?,?,?,?,?)"
-		# cursor.execute(query, (bp.faction + " " + bp.name, bp.health, bp.DPS, bp.mass_cost, bp.energy_cost, bp.range, bp.speed, bp.faction_ID))
-		# connection.commit()
-		# print("\n Units (BP) were added successfully to database!\n")
+		query = "INSERT INTO Units_T1_Land(Name, Health, DPS, Mass_Cost, Energy_Cost, Range, Speed, Faction_ID) VALUES (?,?,?,?,?,?,?,?)"
+		cursor.execute(query, (bp.faction + " " + bp.name, bp.health, bp.DPS, bp.mass_cost, bp.energy_cost, bp.range, bp.speed, bp.faction_ID))
+		connection.commit()
+		print("\n Units (BP) were added successfully to database!\n")
 	except Exception as error:
 		traceback.print_exc()
 		print("\nUh oh, couldn't ADD_BP_TO_DB, something went wrong!")
+
+
+def test_print(connection, bp):
+
+	# raw test sql query 
+
+	try:
+		cursor = connection.cursor()
+		query = "SELECT * FROM Units_T1_Land"
+		cursor.execute(query)
+		results = cursor.fetchall()
+		print(results)
+
+	except Exception as error:
+		traceback.print_exc()
+		print("\nUh oh, couldn't do TEST_PRINT, something went wrong!")
+
+def show_units(connection, bp):
+
+	# prints out the units table in a nice format, joins data nicely and such
+
+	try:
+		cursor = connection.cursor()
+		query = "SELECT Units_T1_Land.Name, Units_T1_Land.Health, Units_T1_Land.DPS, Units_T1_Land.Mass_Cost, Units_T1_Land.Energy_Cost, Units_T1_Land.Range, Units_T1_Land.Speed, Units_T1_Land.Faction_ID FROM Units_T1_Land JOIN Faction ON Units_T1_Land.Faction_ID=Faction.ID;"
+		cursor.execute(query)
+		results = cursor.fetchall()
+		print(f"\n{'Name':<40}{'Health':<20}{'DPS':<20}{'Mass_Cost':<20}{'Energy_Cost':<20}{'Range':<20}{'Speed':<20}{'Faction':<20}")
+		for info in results:
+			print(f"{info[0]:<40}{info[1]:<20}{info[2]:<20}{info[3]:<20}{info[4]:<20}{info[5]:<20}{info[6]:<20}{info[7]:<20}")
+	except Exception as error:
+		traceback.print_exc()
+		print("\nUh oh, something went wrong while trying to SHOW_UNITS")
 
 # its like a template which you can fill lots of data into, when you know there's gonna be a lot of files using the same variables as each other.
 # you make instances with the "self." structure and can access and manipulate them more easily than a dictonary. You can also define methods within. Classes are great!
@@ -184,20 +216,55 @@ def main():
 		# 	print(bp)
 		#if bp.faction == "UEF":
 
+		
+		# this filters for and prints the chosen selection of units from the database which we are using 
+
 		if bp.tech_level == 1 and bp.unit_type == "Land" and bp.is_engi == False and bp.is_test_unit == False or bp.name == "Point Defense" and bp.tech_level == 1:
 		#if bp.faction == "UEF" and "Experimental" in bp.name:
 			all_bps[bp.code] = bp
 			print(bp)
+	while True:
+		with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
 
-	with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
+			# makes the connection to the chosen database file and then prints all the units chosen through a filter
+			user_input = input("\n- [0] test print SELECT * FROM Units_T1_Land\n- [1] Print all units\n- [2] Check the counters for a chosen unit\n- [3] Sort units by a chosen statistic\n- [4] Filter units by chosen faction\n- [5] Insert custom unit data into the database\n- [6] Exit database\n\nEnter Here: ")
+			
+			if user_input == "0":
+				test_print(connection, bp)
 
-		# makes the connection to the chosen database file and then prints all the units chosen through a filter
+			elif user_input == "1":
+				show_units(connection, bp)
 
-		for bp in all_bps.values():
-			if bp.tech_level == 1 and bp.unit_type == "Land" and bp.is_engi == False or bp.name == "Point Defense" and bp.tech_level == 1:
-				add_bp_to_db(connection, bp)
+			elif user_input == "2":
+				print("\n WIP feature")
 
-		#print(all_bps["UEL0001"].name)
+				# print unit names and units ids, ask the user to enter the unit id of the unit they want to view matchups for
+				# then use the user inputted number to grab the unit counters and descriptions from the matchups table (each counter on a new line)
+
+			elif user_input == "3":
+				print("\n WIP feature")
+
+			elif user_input == "4":
+				print("\n WIP feature")
+
+			elif user_input == "5":
+				print("\n WIP feature")
+
+			elif user_input == "6":
+				# allows the user to easily exit the program when they want to
+
+				print("\nExiting now!\nThank you for using my Supreme Commander units database!\n")
+				break
+
+			#this uses the same filter as above to decide which units get added to the SQL database (the add_bp_to_db function is commented out while not under use)
+
+			for bp in all_bps.values():
+				if bp.tech_level == 1 and bp.unit_type == "Land" and bp.is_engi == False or bp.name == "Point Defense" and bp.tech_level == 1:
+					pass
+					#add_bp_to_db(connection, bp)
+					
+
+			#print(all_bps["UEL0001"].name)
 
 if __name__ == "__main__":
 	main()
