@@ -2,6 +2,33 @@ import json, os, sqlite3, traceback
 
 TARGET_DATABASE_FILE = "supcom.db"
 
+def ask_for_int_value(string):
+
+	# function that sanitises user input to make sure that they enter a valid number into parts of my program which require integers, without crashing the program
+
+	while True:
+		try:
+			integer_input = input(f"{string}")
+			int(integer_input)
+
+			return integer_input
+		except:
+			print("\n\nPLEASE ENTER A VALID NUMERICAL VALUE!\n")
+
+
+def user_input_valid_check(lower_bound, upper_bound, user_value):
+
+	'''function which checks to make sure that the user doesn't enter a value lower or higher than they are meant to'''
+
+	if int(user_value) > upper_bound or int(user_value) < lower_bound:
+		while True:
+			retry_user_input = ask_for_int_value(f"\nPlease enter a valid value between {lower_bound} and {upper_bound}: ")
+			if int(retry_user_input) <= upper_bound and int(retry_user_input) >= lower_bound:
+				print("\nRetried input was successful!\n")
+				return retry_user_input
+	else:
+		return user_value
+
 def add_bp_to_db(connection, bp):
 # this query adds the chosen info from the dataset into the sql database for us to work with in there
 
@@ -31,23 +58,154 @@ def test_print(connection, bp):
 		traceback.print_exc()
 		print("\nUh oh, couldn't do TEST_PRINT, something went wrong!")
 
+def check_counter(connection, bp):
+
+	# prints out the units table in a nice format, joins data nicely and such
+
+	try:
+		cursor = connection.cursor()
+		query = "SELECT Units_T1_Land.ID, Units_T1_Land.Name FROM Units_T1_Land;"
+		cursor.execute(query)
+		results = cursor.fetchall()
+		print(f"\n{'ID':<5}{'NAME':<40}\n")
+		for info in results:
+			print(f"{info[0]:<5}{info[1]:<40}")
+
+		choose_unit = ask_for_int_value("\nPlease enter the unit ID (number) of the unit you would like to check the counters for: ")
+
+		# need to make this update if the user introduces more than 40 total units to the database
+		choose_unit = user_input_valid_check(1, 23, choose_unit)
+
+		# query = "SELECT Matchup.Unit_for_ID, Matchup.Unit_against_ID, Matchup.Description, Units_T1_Land.ID, Units_T1_Land.Name FROM Matchup JOIN Units_T1_Land ON Units_T1_Land.ID=Matchup.Unit_for_ID WHERE Unit_for_ID = ?;"
+		query = """
+		SELECT This_info.Name as This_name, Counters.Name as Counter_name, Matchup.Description FROM Matchup 
+		JOIN Units_T1_Land as Counters  ON Matchup.Unit_against_ID=Counters.ID
+		JOIN Units_T1_Land as This_info ON Matchup.Unit_for_ID=This_info.ID WHERE Matchup.Unit_for_ID = ?
+		"""
+
+		cursor.execute(query, (choose_unit,))
+		results = cursor.fetchall()
+		print(f"\n\nCHOSEN UNIT \n\n{results[0][0]}")
+		print(f"\n{'COUNTERS':<40}{'DESCRIPTIONS':<100}\n")
+		
+		#print(f"{results[0][0]:<30}{results[0][1]:<40}{results[0][2]:<100}")
+		#nothing = ""
+
+		for info in results:
+			print(f"{info[1]:<40}{info[2]:<100}")
+
+	except Exception as error:
+		traceback.print_exc()
+		print("\nUh oh, something went wrong while trying to SHOW_UNITS")
+
+
 def show_units(connection, bp):
 
 	# prints out the units table in a nice format, joins data nicely and such
 
 	try:
 		cursor = connection.cursor()
-		query = "SELECT Units_T1_Land.Name, Units_T1_Land.Health, Units_T1_Land.DPS, Units_T1_Land.Mass_Cost, Units_T1_Land.Energy_Cost, Units_T1_Land.Range, Units_T1_Land.Speed, Units_T1_Land.Faction_ID FROM Units_T1_Land JOIN Faction ON Units_T1_Land.Faction_ID=Faction.ID;"
+
+		query = "SELECT Units_T1_Land.Name, Units_T1_Land.Health, Units_T1_Land.DPS, Units_T1_Land.Mass_Cost, Units_T1_Land.Energy_Cost, Units_T1_Land.Range, Units_T1_Land.Speed, Faction.Faction_Name FROM Units_T1_Land JOIN Faction ON Units_T1_Land.Faction_ID=Faction.ID;"
 		cursor.execute(query)
 		results = cursor.fetchall()
-		print(f"\n{'Name':<40}{'Health':<20}{'DPS':<20}{'Mass_Cost':<20}{'Energy_Cost':<20}{'Range':<20}{'Speed':<20}{'Faction':<20}")
+		print(f"\n{'NAME':<40}{'HEALTH':<20}{'DAMAGE/SECOND':<20}{'MASS COST':<20}{'ENERGY COST':<20}{'WEAPON RANGE':<20}{'MAX SPEED':<20}{'FACTION':<20}\n")
 		for info in results:
 			print(f"{info[0]:<40}{info[1]:<20}{info[2]:<20}{info[3]:<20}{info[4]:<20}{info[5]:<20}{info[6]:<20}{info[7]:<20}")
 	except Exception as error:
 		traceback.print_exc()
 		print("\nUh oh, something went wrong while trying to SHOW_UNITS")
 
-# its like a template which you can fill lots of data into, when you know there's gonna be a lot of files using the same variables as each other.
+def order_units(connection, bp):
+
+	# function which allows you to order units by a chosen stat
+
+	try:
+		print("""\nSTATS TO SORT BY:\n 
+  [ 1 ] Health
+  [ 2 ] DPS
+  [ 3 ] Mass Cost
+  [ 4 ] Energy Cost
+  [ 5 ] Range
+  [ 6 ] Speed
+  [ 7 ] Faction """)
+
+		cursor = connection.cursor()
+
+		choose_stat = ask_for_int_value("\nPlease enter the stat ID (number) of the statistic you would like to order the table by: ")
+		choose_stat = user_input_valid_check(1, 7, choose_stat)
+
+		column_names = ['Units_T1_Land.Health', 'Units_T1_Land.DPS', 'Units_T1_Land.Mass_Cost', 'Units_T1_Land.Energy_Cost', 'Units_T1_Land.Range', 'Units_T1_Land.Speed', 'Faction.Faction_Name']
+
+		query = f"""
+		SELECT Units_T1_Land.Name, Units_T1_Land.Health, 
+		Units_T1_Land.DPS, Units_T1_Land.Mass_Cost, 
+		Units_T1_Land.Energy_Cost, Units_T1_Land.Range, 
+		Units_T1_Land.Speed, Faction.Faction_Name 
+		FROM Units_T1_Land JOIN Faction ON Units_T1_Land.Faction_ID=Faction.ID ORDER BY {column_names[int(choose_stat) - 1]};"""
+		
+		# this is safe from injection and doesn't need to use the ? syntax, because the user input HAS to be a number to get through, and all that the number can be used for is to select from the column names afterwards
+
+
+		#print(f"'{column_names[int(choose_stat) - 1]}'")
+		#connection.set_trace_callback(print)
+		cursor.execute(query)
+		#connection.set_trace_callback(None)
+
+		results = cursor.fetchall()
+		print(f"\n{'NAME':<40}{'HEALTH':<20}{'DAMAGE/SECOND':<20}{'MASS COST':<20}{'ENERGY COST':<20}{'WEAPON RANGE':<20}{'MAX SPEED':<20}{'FACTION':<20}\n")
+		for info in results:
+			print(f"{info[0]:<40}{info[1]:<20}{info[2]:<20}{info[3]:<20}{info[4]:<20}{info[5]:<20}{info[6]:<20}{info[7]:<20}")
+	except Exception as error:
+		traceback.print_exc()
+		print("\nUh oh, something went wrong while trying to ORDER_UNITS")
+
+def filter_by_faction(connection, bp):
+
+	# function which allows you to order units by a chosen stat
+
+	try:
+		print("""\nFACTIONS TO CHOOSE:\n 
+  [ 1 ] UEF
+  [ 2 ] Cybran
+  [ 3 ] Aeon
+  [ 4 ] Seraphim """)
+
+		cursor = connection.cursor()
+
+		choose_fac = ask_for_int_value("\nPlease enter the Faction ID (number) of the faction you would like to print units from: ")
+		choose_fac = user_input_valid_check(1, 4, choose_fac)
+
+		faction_column_names = ['UEF', 'Cybran', 'Aeon', 'Seraphim']
+
+		print(f"\n\nPRINTING ONLY: {faction_column_names[int(choose_fac) - 1]} Units")
+
+		query = """
+		SELECT Units_T1_Land.Name, Units_T1_Land.Health, 
+		Units_T1_Land.DPS, Units_T1_Land.Mass_Cost, 
+		Units_T1_Land.Energy_Cost, Units_T1_Land.Range, 
+		Units_T1_Land.Speed, Faction.Faction_Name 
+		FROM Units_T1_Land JOIN Faction ON Units_T1_Land.Faction_ID=Faction.ID WHERE Faction.Faction_Name = ?;"""
+		
+		# this is safe from injection and doesn't need to use the ? syntax, because the user input HAS to be a number to get through, and all that the number can be used for is to select from the column names afterwards
+
+
+		#print(f"'{column_names[int(choose_stat) - 1]}'")
+		#connection.set_trace_callback(print)
+		cursor.execute(query, (faction_column_names[int(choose_fac) - 1],))
+		#connection.set_trace_callback(None)
+
+		results = cursor.fetchall()
+		print(f"\n{'NAME':<40}{'HEALTH':<20}{'DAMAGE/SECOND':<20}{'MASS COST':<20}{'ENERGY COST':<20}{'WEAPON RANGE':<20}{'MAX SPEED':<20}{'FACTION':<20}\n")
+		for info in results:
+			print(f"{info[0]:<40}{info[1]:<20}{info[2]:<20}{info[3]:<20}{info[4]:<20}{info[5]:<20}{info[6]:<20}{info[7]:<20}")
+	except Exception as error:
+		traceback.print_exc()
+		print("\nUh oh, something went wrong while trying to FILTER_BY_FACTION")
+
+
+
+# the class is like a template which you can fill lots of data into, when you know there's gonna be a lot of files using the same variables as each other.
 # you make instances with the "self." structure and can access and manipulate them more easily than a dictonary. You can also define methods within. Classes are great!
 
 # e.g. with a dictionary you would have to make a seperate dictionary for each unit because you can't instance/reuse the same variables between each unit- 
@@ -180,10 +338,10 @@ class Blueprint:
 				if self.damage != -1:
 					if self.code == "XSL0103":
 						self.damage *= 5
-						print(f"{self.rof}*{self.damage} (5x projectiles for sera mobile light arty)")
+						# print(f"{self.rof}*{self.damage} (5x projectiles for sera mobile light arty)")
 					if self.code == "UAL0106":
 						self.damage *= 3
-						print(f"{self.rof}*{self.damage} (3x projectiles for aeon light assault bot)")
+						# print(f"{self.rof}*{self.damage} (3x projectiles for aeon light assault bot)")
 					self.DPS += self.rof * self.damage
 					self.damage = -1
 					self.rof = -1
@@ -207,6 +365,8 @@ def main():
 
 	blueprint_names = os.listdir(blueprint_path)
 
+	print("\n\nWELCOME to my Supreme Commander database!\n")
+
 	for bp_name in blueprint_names:
 		bp = Blueprint(blueprint_path, bp_name)
 		
@@ -222,13 +382,16 @@ def main():
 		if bp.tech_level == 1 and bp.unit_type == "Land" and bp.is_engi == False and bp.is_test_unit == False or bp.name == "Point Defense" and bp.tech_level == 1:
 		#if bp.faction == "UEF" and "Experimental" in bp.name:
 			all_bps[bp.code] = bp
-			print(bp)
+			# print(bp)
+
 	while True:
 		with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
 
 			# makes the connection to the chosen database file and then prints all the units chosen through a filter
-			user_input = input("\n- [0] test print SELECT * FROM Units_T1_Land\n- [1] Print all units\n- [2] Check the counters for a chosen unit\n- [3] Sort units by a chosen statistic\n- [4] Filter units by chosen faction\n- [5] Insert custom unit data into the database\n- [6] Exit database\n\nEnter Here: ")
+			user_input = input("\n- [0] test print SELECT * FROM Units_T1_Land\n- [1] Print all units\n- [2] Check the counters for a chosen unit\n- [3] Sort units by a chosen statistic\n- [4] Filter units by chosen faction\n- [5] WIP feature\n- [6] Exit database\n\nEnter Here: ")
 			
+			# [5] allow user to Insert custom unit data into the database - extra functionality could be cool
+
 			if user_input == "0":
 				test_print(connection, bp)
 
@@ -236,25 +399,35 @@ def main():
 				show_units(connection, bp)
 
 			elif user_input == "2":
-				print("\n WIP feature")
+				check_counter(connection, bp)
 
 				# print unit names and units ids, ask the user to enter the unit id of the unit they want to view matchups for
 				# then use the user inputted number to grab the unit counters and descriptions from the matchups table (each counter on a new line)
 
 			elif user_input == "3":
-				print("\n WIP feature")
+				order_units(connection, bp)
 
 			elif user_input == "4":
-				print("\n WIP feature")
+				filter_by_faction(connection, bp)
 
 			elif user_input == "5":
 				print("\n WIP feature")
 
+			#SELECT Matchup.Description, Counters.Name as Counter_name, This_info.Name as This_name FROM Matchup 
+    		#JOIN Units_T1_Land as Counters  ON Matchup.Unit_against_ID=Counters.ID
+   			#JOIN Units_T1_Land as This_info ON Matchup.Unit_for_ID=This_info.ID WHERE Matchup.Unit_against_ID = 6
+
 			elif user_input == "6":
 				# allows the user to easily exit the program when they want to
 
-				print("\nExiting now!\nThank you for using my Supreme Commander units database!\n")
+				print("\nExiting now - thank you for using my Supreme Commander units database!\n")
 				break
+
+			elif user_input == "fish":
+				print("\nFish are great, but please enter a valid input sir.")
+
+			else:
+				print("\nInvalid input, please try again.")
 
 			#this uses the same filter as above to decide which units get added to the SQL database (the add_bp_to_db function is commented out while not under use)
 
