@@ -204,6 +204,77 @@ def filter_by_faction(connection, bp):
 		print("\nUh oh, something went wrong while trying to FILTER_BY_FACTION")
 
 
+def add_unit(connection, bp):
+
+	new_unit_name = input("\n Enter new unit name: ")
+
+	new_unit_HP = ask_for_int_value("\n Enter new unit health value: ")
+	new_unit_HP = user_input_valid_check(1, 1000000, new_unit_HP)
+
+	new_unit_DPS = ask_for_int_value("\n Enter new unit DPS value: ")
+	new_unit_DPS = user_input_valid_check(1, 100000, new_unit_DPS)
+
+	new_unit_MC = ask_for_int_value("\n Enter new unit mass cost value: ")
+	new_unit_MC = user_input_valid_check(1, 1000000, new_unit_MC)
+
+	new_unit_EC = ask_for_int_value("\n Enter new unit energy cost value: ")
+	new_unit_EC = user_input_valid_check(1, 50000000, new_unit_EC)
+
+	new_unit_WR = ask_for_int_value("\n Enter new weapon range value: ")
+	new_unit_WR = user_input_valid_check(1, 100000, new_unit_WR)
+
+	new_unit_MS = ask_for_int_value("\n Enter new max speed value: ")
+	new_unit_MS = user_input_valid_check(1, 100000, new_unit_MS)
+
+	new_unit_FAC = ask_for_int_value("\n Enter new faction ID (1 = UEF, 2 = Cybran, 3 = Aeon, 4 = Seraphim: ")
+	new_unit_FAC = user_input_valid_check(1, 4, new_unit_FAC)
+
+	'''allows the user to pretty safely add games to the table'''
+
+	try:
+		cursor = connection.cursor()
+		query = "INSERT INTO Units_T1_Land(Name, Health, DPS, Mass_Cost, Energy_Cost, Range, Speed, Faction_ID) VALUES (?,?,?,?,?,?,?,?)"
+		cursor.execute(query, (new_unit_name, new_unit_HP, new_unit_DPS, new_unit_MC, new_unit_MC, new_unit_WR, new_unit_MS, new_unit_FAC))
+		connection.commit()
+		print("\nUnit was added successfully!\n")
+	except Exception as error:
+		traceback.print_exc()
+		print("\nUh oh, couldn't ADD_UNIT, something went wrong!")
+
+
+def delete_unit(connection, bp):
+
+	'''allows the user to fairly safely remove games from the table'''
+
+	try:
+
+		cursor = connection.cursor()
+		query = "SELECT Units_T1_Land.ID, Units_T1_Land.Name FROM Units_T1_Land;"
+		cursor.execute(query)
+		results = cursor.fetchall()
+		print(f"\n{'ID':<5}{'NAME':<40}\n")
+		for info in results:
+			print(f"{info[0]:<5}{info[1]:<40}")
+
+		choose_del = ask_for_int_value("\nPlease enter the unit ID (number) of the unit you would like to delete: ")
+
+		
+		choose_del = user_input_valid_check(1, 1000, choose_del)
+
+
+		cursor = connection.cursor()
+		query = "DELETE FROM Units_T1_Land WHERE ID = ?"
+		cursor.execute(query, (choose_del,))
+		num_rows_affected = cursor.rowcount
+		if num_rows_affected == 0:
+			print("\nCould not find and DELETE_UNIT (likely chosen game does not exist)!")
+		else:
+			connection.commit()
+			print("\nChosen unit was deleted successfully!\n")
+	except Exception as error:
+		traceback.print_exc()
+		print("Uh oh, something went wrong while trying to DELETE_UNITS (likely chosen game does not exist)")
+
 
 # the class is like a template which you can fill lots of data into, when you know there's gonna be a lot of files using the same variables as each other.
 # you make instances with the "self." structure and can access and manipulate them more easily than a dictonary. You can also define methods within. Classes are great!
@@ -388,7 +459,7 @@ def main():
 		with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
 
 			# makes the connection to the chosen database file and then prints all the units chosen through a filter
-			user_input = input("\n- [0] test print SELECT * FROM Units_T1_Land\n- [1] Print all units\n- [2] Check the counters for a chosen unit\n- [3] Sort units by a chosen statistic\n- [4] Filter units by chosen faction\n- [5] WIP feature\n- [6] Exit database\n\nEnter Here: ")
+			user_input = input("\n- [0] test print SELECT * FROM Units_T1_Land\n- [1] Print all units\n- [2] Check the counters for a chosen unit\n- [3] Sort units by a chosen statistic\n- [4] Filter units by chosen faction\n- [5] Insert fully custom unit\n- [6] Delete chosen unit\n- [7] Exit database\n\nEnter Here: ")
 			
 			# [5] allow user to Insert custom unit data into the database - extra functionality could be cool
 
@@ -411,13 +482,18 @@ def main():
 				filter_by_faction(connection, bp)
 
 			elif user_input == "5":
-				print("\n WIP feature")
+	
+				add_unit(connection, bp)
+
+			elif user_input == "6":
+				
+				delete_unit(connection, bp)
 
 			#SELECT Matchup.Description, Counters.Name as Counter_name, This_info.Name as This_name FROM Matchup 
     		#JOIN Units_T1_Land as Counters  ON Matchup.Unit_against_ID=Counters.ID
    			#JOIN Units_T1_Land as This_info ON Matchup.Unit_for_ID=This_info.ID WHERE Matchup.Unit_against_ID = 6
 
-			elif user_input == "6":
+			elif user_input == "7":
 				# allows the user to easily exit the program when they want to
 
 				print("\nExiting now - thank you for using my Supreme Commander units database!\n")
