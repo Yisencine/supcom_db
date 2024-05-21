@@ -39,7 +39,7 @@ a {
 
 .button_smaller {
 
-  font-family: Lucida Console;
+  font-family: Lucida Console, monospace;
   border: none;
   border-radius: 12px;
 
@@ -58,7 +58,7 @@ a {
 
 .back_button {
 
-  font-family: Lucida Console;
+  font-family: Lucida Console, monospace;
   border: none;
   font-weight: bold;
   color: white;
