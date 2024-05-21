@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block content %}
+		<a href="/counters">
+		    <button class="back_button button3" type="button">BACK</button>
+		</a>
+	<h2> Chosen Unit: {{ data[0][0] }}</h2>
+    {% for item in data %}
+
+        <p>- Counter: {{ item[1] }} <br> - Description: {{item[2]}}</p>
+        
+    {% endfor %}
+{% endblock %}

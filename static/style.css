@@ -1,0 +1,210 @@
+/* w3 schools css could be quite useful*/
+
+	/*
+    <div class="w3-container">
+
+	{% block content %}  
+	{% endblock %} 
+	
+  */
+
+
+html, body {
+	font-family: "Lucida Console", monospace;
+	margin: 0rem 3rem;
+}
+
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.button {
+  font-family: Lucida Console, monospace;
+  font-weight: bold;
+  border: none;
+  
+  color: white;
+  padding: 12px 24px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 24px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  border-radius: 12px;
+}
+
+.button_smaller {
+
+  font-family: Lucida Console;
+  border: none;
+  border-radius: 12px;
+
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  /* display: block; */
+  display: inline-block;
+
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+.back_button {
+
+  font-family: Lucida Console;
+  border: none;
+  font-weight: bold;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  /* display: block; */
+  display: inline-block;
+
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+
+.button1 {
+  background-color: white;
+  color: #5b6282;
+  border: 2px solid burlywood;
+  box-shadow: 0 4px 8px 0 rgba(20,20,20,0.4), 0 6px 20px 0 rgba(0,0,0,0.19);
+  
+}
+
+.button1:hover {
+  background-color: burlywood;
+  color: white;
+  box-shadow: 0 12px 16px 0 rgba(40,40,40,0.9), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+.button2 {
+  background-color: white;
+  color: #5b6282;
+  border: 2px solid grey;
+}
+
+.button2:hover {
+  background-color: grey;
+  color: white;
+}
+
+.button3 {
+  background-color: white;
+  color: #5b6282;
+  border: 2px solid burlywood;
+}
+
+.button3:hover {
+  background-color: burlywood;
+  color: white;
+}
+
+
+.two-column{
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 15px;
+}
+
+
+body {
+	color: burlywood;
+	font-size: 25px;
+	line-height: 40px;
+	text-align: left;
+	background-color: #5b6282;
+	padding: 20px;
+}
+
+.bluebox {
+	font-family: Lucida Console;
+	display: flex; 
+	font-size: 20px;
+	color: #5b6282;
+	font-weight: lighter;
+	background-color: burlywood;
+	padding: 12px 24px;
+	border-style: solid;
+	border-width: 6px;
+	border-color: grey;
+	border-radius: 20px;
+}
+
+.redbox {
+	display: flex; 
+	background-color: #6a4444;
+	padding: 30px;
+	border-style: solid;
+	border-width: 20px;
+}
+
+
+
+.title {
+	color: steelblue;
+	background-color: burlywood;
+	font-size: 25px;
+	/*text-decoration: underline; */
+	text-shadow: 1px 1px black;
+	padding: 20px;
+	/*font-family: Optima, sans-serif;*/
+	font-weight: bold;
+	line-height: 100px;
+	border-style: solid;
+	border-width: 10px;
+	border-color: lightgrey;
+}
+
+.image_below {
+	border-style: solid;
+	border-width: 10px;
+	border-color: lightcoral;
+	margin:0 2rem;
+	width: 500px;
+
+	box-shadow: 0 8px 16px 0 lightcoral;
+}
+
+.image_margin {
+	border-style: solid;
+	border-width: 10px;
+	border-color: #f6861e;
+	margin:0 2rem;
+	width: 500px;
+
+	box-shadow: 0 8px 16px 0 #f6861e
+}
+
+.image_scaled {
+	border-style: solid;
+	border-width: 10px;
+	border-color: #f6861e;
+	margin:0 2rem;
+	width: 500px;
+	height: 320px;
+	box-shadow: 0 8px 16px 0 #f6861e
+}
+
+.icon_scaled {
+	border-style: solid;
+	border-width: 10px;
+	border-color: lightcoral;
+	margin:0 2rem;
+	width: 300px;
+	height: 250px;
+	box-shadow: 0 8px 16px 0 lightcoral;
+	background-color: white;
+}
+
