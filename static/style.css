@@ -129,7 +129,7 @@ body {
 }
 
 .bluebox {
-	font-family: Lucida Console;
+	font-family: Lucida Console, monospace;
 	display: flex; 
 	font-size: 20px;
 	color: #5b6282;

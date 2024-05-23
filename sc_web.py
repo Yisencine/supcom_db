@@ -42,26 +42,29 @@ def home():
 
 
 @app.route('/counters/<int:id>')
+
 def unit_counter(id):
+	try: 
+		with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
 
-	with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
+		
+			#data = check_counter(connection)
+			#data = ["- Mantis","- MA12", "- Thaam", "- Aurora"]
+			cursor = connection.cursor()
 
-	
-		#data = check_counter(connection)
-		#data = ["- Mantis","- MA12", "- Thaam", "- Aurora"]
-		cursor = connection.cursor()
+			query = """
+			SELECT This_info.Name as This_name, Counters.Name as Counter_name, Matchup.Description FROM Matchup 
+			JOIN Units_T1_Land as Counters  ON Matchup.Unit_against_ID=Counters.ID
+			JOIN Units_T1_Land as This_info ON Matchup.Unit_for_ID=This_info.ID WHERE Matchup.Unit_for_ID = ?
+			"""
+			cursor.execute(query, (id,))
+			results = cursor.fetchall()
+			#return results
 
+			return render_template('counter.html', data=results)
+	except:
+		return render_template("404.html") 
 
-		query = """
-		SELECT This_info.Name as This_name, Counters.Name as Counter_name, Matchup.Description FROM Matchup 
-		JOIN Units_T1_Land as Counters  ON Matchup.Unit_against_ID=Counters.ID
-		JOIN Units_T1_Land as This_info ON Matchup.Unit_for_ID=This_info.ID WHERE Matchup.Unit_for_ID = ?
-		"""
-		cursor.execute(query, (id,))
-		results = cursor.fetchall()
-		#return results
-
-		return render_template('counter.html', data=results)
 
 @app.route('/counters')
 def unit_counters():
