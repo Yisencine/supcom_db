@@ -1,6 +1,47 @@
 {% extends "layout.html" %}
 {% block content %}
 		<h2> SORT UNITS PAGE </h2>
+
         <p>Here you can SORT UNITS to the database. Or you can PRESS T NOW <br><br> have fun (nothing working here yet):</p>
+
+        <a href="/sort_units/0">
+    		<button class="button button1" type="button">NAME (ABC)</button>
+		</a>
+
+		<a href="/sort_units/1">
+    		<button class="button button1" type="button">HEALTH</button>
+		</a>
+
+		<a href="/sort_units/2">
+    		<button class="button button1" type="button">DPS</button>
+		</a>
+
+		<a href="/sort_units/3">
+    		<button class="button button1" type="button">MASS COST</button>
+		</a>
+
+		<a href="/sort_units/4">
+    		<button class="button button1" type="button">ENERGY COST</button>
+		</a>
+
+		<a href="/sort_units/5">
+    		<button class="button button1" type="button">RANGE</button>
+		</a>
+
+		<a href="/sort_units/6">
+    		<button class="button button1" type="button">SPEED</button>
+		</a>
+
+		<a href="/sort_units/7">
+    		<button class="button button1" type="button">FACTION</button>
+		</a>
+
+		<h2> SORTED UNITS DISPLAY (WITH REL STAT SHOWN IDEALLY)</h2>
+
+         {% for unit in data %}
+
+    	 <p class="button_smaller button2" >  {{unit[0]}} ({{unit[stat]}}) </p> 
+
+    	 {% endfor %}
 
 {% endblock %}

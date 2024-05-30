@@ -63,30 +63,31 @@ def unit_counter(id):
 			return render_template('counter.html', data=results)
 	except:
 		return render_template("404.html") 
-		
-@app.route('/sort_units')
-def sort_units():
-# def sort_units(stat):
+
+@app.route('/sort_units/<int:stat>')
+def sort_units(stat):
 
 	# this function will allow the user to select a statistic to sort by on the website
 
-	try: 
-		with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
+	# try: 
+	with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
 
-			query = f"""
-				SELECT Units_T1_Land.Name, Units_T1_Land.Health, 
-				Units_T1_Land.DPS, Units_T1_Land.Mass_Cost, 
-				Units_T1_Land.Energy_Cost, Units_T1_Land.Range, 
-				Units_T1_Land.Speed, Faction.Faction_Name 
-				FROM Units_T1_Land JOIN Faction ON Units_T1_Land.Faction_ID=Faction.ID ORDER BY {column_names[int(stat) - 1]};"""
+		column_names = ['Units_T1_Land.Health', 'Units_T1_Land.DPS', 'Units_T1_Land.Mass_Cost', 'Units_T1_Land.Energy_Cost', 'Units_T1_Land.Range', 'Units_T1_Land.Speed', 'Faction.Faction_Name']
+		cursor = connection.cursor()
+		query = f"""
+			SELECT Units_T1_Land.Name, Units_T1_Land.Health, 
+			Units_T1_Land.DPS, Units_T1_Land.Mass_Cost, 
+			Units_T1_Land.Energy_Cost, Units_T1_Land.Range, 
+			Units_T1_Land.Speed, Faction.Faction_Name 
+			FROM Units_T1_Land JOIN Faction ON Units_T1_Land.Faction_ID=Faction.ID ORDER BY {column_names[int(stat) - 1]};"""
 
-			cursor.execute(query, (stat,))
-			results = cursor.fetchall()
+		cursor.execute(query)
+		results = cursor.fetchall()
 
-			return render_template('sort_units.html', data=results)
+		return render_template('sort_units.html', stat = stat, data=results)
 
-	except:
-		return render_template("404.html") 
+	# except:
+	#  	return render_template("404.html") 
 
 
 @app.route('/filter_factions')
