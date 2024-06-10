@@ -18,6 +18,22 @@ html, body {
 }
 
 
+table, th, td {
+  border: 5px solid #5b6282;
+  border-radius: 10px;
+  border-spacing: 4px;
+  border-style: solid;
+  border-color: grey;
+  font-size: 15px;
+ /* border-collapse: collapse;*/
+  color: #5b6282;
+
+}
+th, td {
+  background-color: burlywood;
+  padding: 6px 20px;
+}
+
 a {
   color: inherit;
   text-decoration: inherit;
