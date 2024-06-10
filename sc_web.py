@@ -69,33 +69,50 @@ def sort_units(stat):
 
 	# this function will allow the user to select a statistic to sort by on the website
 
-	# try: 
-	with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
+	try: 
+		with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
 
-		column_names = ['Units_T1_Land.Health', 'Units_T1_Land.DPS', 'Units_T1_Land.Mass_Cost', 'Units_T1_Land.Energy_Cost', 'Units_T1_Land.Range', 'Units_T1_Land.Speed', 'Faction.Faction_Name']
-		cursor = connection.cursor()
-		query = f"""
-			SELECT Units_T1_Land.Name, Units_T1_Land.Health, 
-			Units_T1_Land.DPS, Units_T1_Land.Mass_Cost, 
-			Units_T1_Land.Energy_Cost, Units_T1_Land.Range, 
-			Units_T1_Land.Speed, Faction.Faction_Name 
-			FROM Units_T1_Land JOIN Faction ON Units_T1_Land.Faction_ID=Faction.ID ORDER BY {column_names[int(stat) - 1]};"""
+			column_names = ['Units_T1_Land.Health', 'Units_T1_Land.DPS', 'Units_T1_Land.Mass_Cost', 'Units_T1_Land.Energy_Cost', 'Units_T1_Land.Range', 'Units_T1_Land.Speed', 'Faction.Faction_Name']
+			cursor = connection.cursor()
+			query = f"""
+				SELECT Units_T1_Land.Name, Units_T1_Land.Health, 
+				Units_T1_Land.DPS, Units_T1_Land.Mass_Cost, 
+				Units_T1_Land.Energy_Cost, Units_T1_Land.Range, 
+				Units_T1_Land.Speed, Faction.Faction_Name 
+				FROM Units_T1_Land JOIN Faction ON Units_T1_Land.Faction_ID=Faction.ID ORDER BY {column_names[int(stat) - 1]};"""
 
-		cursor.execute(query)
-		results = cursor.fetchall()
+			cursor.execute(query)
+			results = cursor.fetchall()
 
-		return render_template('sort_units.html', stat = stat, data=results)
+			return render_template('sort_units.html', stat = stat, data=results)
 
-	# except:
-	#  	return render_template("404.html") 
+	except:
+	 	return render_template("404.html") 
 
 
-@app.route('/filter_factions')
-def filter_factions():
+@app.route('/filter_factions/<int:fac>')
+def filter_factions(fac):
 
+	faction_column_names = ['UEF', 'Cybran', 'Aeon', 'Seraphim']
 	# this function will allow the user to select one of four factions to filter by (and only show them those units and their stats)
+	try:
+		with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
+			cursor = connection.cursor()
+			query = """
+				SELECT Units_T1_Land.Name, Units_T1_Land.Health, 
+				Units_T1_Land.DPS, Units_T1_Land.Mass_Cost, 
+				Units_T1_Land.Energy_Cost, Units_T1_Land.Range, 
+				Units_T1_Land.Speed, Faction.Faction_Name 
+				FROM Units_T1_Land JOIN Faction ON Units_T1_Land.Faction_ID=Faction.ID WHERE Faction.Faction_Name = ?;"""
+			cursor.execute(query, (faction_column_names[int(fac) - 1],))
+			results = cursor.fetchall()
 
-	return render_template('filter_factions.html')
+	except:
+	  	return render_template("404.html") 
+
+	
+
+	return render_template('filter_factions.html', fac = fac, data=results)
 
 @app.route('/add_units')
 def add_units():

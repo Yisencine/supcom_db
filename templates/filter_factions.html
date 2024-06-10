@@ -1,6 +1,29 @@
 {% extends "layout.html" %}
 {% block content %}
 		<h2> FILTER FACTIONS PAGE </h2>
-        <p>Here you can FILTER FACTIONS in the database. <br><br> have fun (nothing working here yet):</p>
+        <p>Here you can filter by their factions in the database. </p>
+          <a href="/filter_factions/0">
+    		<button class="button_smaller button2" type="button">SERAPHIM</button>
+		</a>
+
+		<a href="/filter_factions/1">
+    		<button class="button_smaller button2" type="button">UEF</button>
+		</a>
+
+		<a href="/filter_factions/2">
+    		<button class="button_smaller button2" type="button">CYBRAN</button>
+		</a>
+
+		<a href="/filter_factions/3">
+    		<button class="button_smaller button2" type="button">AEON</button>
+		</a>
+
+		<p> CHOSEN FACTION UNITS DISPLAY:</p>
+
+         {% for unit in data %}
+
+    	 <p class="greybox" >  {{unit[0]}}</p> 
+
+    	 {% endfor %}
 
 {% endblock %}
