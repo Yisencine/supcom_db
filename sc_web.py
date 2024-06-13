@@ -121,6 +121,14 @@ def add_units():
 
 	return render_template('add_units.html')
 
+@app.route('/add_units', methods = ['POST'])
+def form():
+
+	response = request.form
+	# this function will allow the user to add their own custom units and hopefully even add their own custom matchup data to the database
+
+	return render_template('add_units.html')
+
 @app.route('/delete_units')
 def delete_units():
 

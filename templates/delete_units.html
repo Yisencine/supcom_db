@@ -1,6 +1,11 @@
 {% extends "layout.html" %}
 {% block content %}
 		<h2> DELETE UNITS PAGE </h2>
-        <p>Here you can DELETE UNITS from the database. <br><br> have fun (nothing working here yet):</p>
+        <p>Here you can delete from the database. (WIP feauture):</p>
+        <form action="/action_page.php">
+		  <label for="fname">Choose the unit you wish to delete:</label><br>
+		  <input type="text" id="fname" name="fname" value="John Doe"><br><br>
+		  <input class="button_smaller button2" type="submit" value="Confirm deletion">
+		</form>
 
 {% endblock %}

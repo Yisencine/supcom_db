@@ -1,6 +1,32 @@
 {% extends "layout.html" %}
 {% block content %}
 		<h2> ADD UNITS PAGE </h2>
-        <p>Here you can ADD UNITS to the database. <br><br> have fun (nothing working here yet):</p>
+        <p>Here you can add units to the database (WIP feauture):</p>
+        <form action="/action_page.php">
+		  <label for="fname">New unit name:</label><br>
+		  <input type="text" id="fname" name="fname" value="John Doe"><br>
+		  <label for="lname">Health:</label><br>
+		  <input type="text" id="lname" name="lname" value=""><br>
+		  <label for="lname">Damage per second:</label><br>
+		  <input type="text" id="lname" name="lname" value=""><br>
+		  <label for="lname">Mass cost:</label><br>
+		  <input type="text" id="lname" name="lname" value=""><br>
+		  <label for="lname">Energy cost:</label><br>
+		  <input type="text" id="lname" name="lname" value=""><br>
+		  <label for="lname">Weapon range (max):</label><br>
+		  <input type="text" id="lname" name="lname" value=""><br>
+		  <label for="lname">Movement speed:</label><br>
+		  <input type="text" id="lname" name="lname" value=""><br><br>
+		  <label for="lname">Faction:</label><br>
+		  <input type="radio" id="cyb" name="fac" value="cyb">
+		  <label for="UEF">UEF</label><br>
+		  <input type="radio" id="uef" name="fac" value="uef">
+		  <label for="Cybran">Cybran</label><br>
+		  <input type="radio" id="ser" name="fac" value="ser">
+		  <label for="Seraphim">Seraphim</label><br>
+		  <input type="radio" id="aeo" name="fac" value="aeo">
+		  <label for="Aeon">Aeon</label><br><br>
+		  <input class="button_smaller button2" type="submit" value="Submit new unit">
+		</form>
 
 {% endblock %}
