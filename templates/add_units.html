@@ -2,30 +2,36 @@
 {% block content %}
 		<h2> ADD UNITS PAGE </h2>
         <p>Here you can add units to the database (WIP feauture):</p>
-        <form action="/action_page.php">
-		  <label for="fname">New unit name:</label><br>
-		  <input type="text" id="fname" name="fname" value="John Doe"><br>
-		  <label for="lname">Health:</label><br>
-		  <input type="text" id="lname" name="lname" value=""><br>
-		  <label for="lname">Damage per second:</label><br>
-		  <input type="text" id="lname" name="lname" value=""><br>
-		  <label for="lname">Mass cost:</label><br>
-		  <input type="text" id="lname" name="lname" value=""><br>
-		  <label for="lname">Energy cost:</label><br>
-		  <input type="text" id="lname" name="lname" value=""><br>
-		  <label for="lname">Weapon range (max):</label><br>
-		  <input type="text" id="lname" name="lname" value=""><br>
-		  <label for="lname">Movement speed:</label><br>
-		  <input type="text" id="lname" name="lname" value=""><br><br>
-		  <label for="lname">Faction:</label><br>
-		  <input type="radio" id="cyb" name="fac" value="cyb">
-		  <label for="UEF">UEF</label><br>
-		  <input type="radio" id="uef" name="fac" value="uef">
-		  <label for="Cybran">Cybran</label><br>
-		  <input type="radio" id="ser" name="fac" value="ser">
+        <form action="add_units", method="post">
+		  <label for="Name">New unit name:</label><br>
+		  <input type="text" id="x" name="Name" value="John Doe"><br>
+		  <label for="Health">Health:</label><br>
+		  <input type="text" id="x" name="Health" value=""><br>
+		  <label for="DPS">Damage per second:</label><br>
+		  <input type="text" id="x" name="DPS" value=""><br>
+		  <label for="Mass_Cost">Mass cost:</label><br>
+		  <input type="text" id="x" name="Mass_Cost" value=""><br>
+		  <label for="Energy_Cost">Energy cost:</label><br>
+		  <input type="text" id="x" name="Energy_Cost" value=""><br>
+		  <label for="Range">Weapon range (max):</label><br>
+		  <input type="text" id="x" name="Range" value=""><br>
+		  <label for="Speed">Movement speed:</label><br>
+		  <input type="text" id="x" name="Speed" value=""><br><br>
+
+		  <label for="Faction_ID">Faction:</label><br>
+
+		  <input type="radio" id="4" name="Faction_ID" value="4">
 		  <label for="Seraphim">Seraphim</label><br>
-		  <input type="radio" id="aeo" name="fac" value="aeo">
+
+		  <input type="radio" id="1" name="Faction_ID" value="1">
+		  <label for="UEF">UEF</label><br>
+		  
+		  <input type="radio" id="2" name="Faction_ID" value="2">
+		  <label for="Cybran">Cybran</label><br>
+		
+		  <input type="radio" id="3" name="Faction_ID" value="3">
 		  <label for="Aeon">Aeon</label><br><br>
+		  
 		  <input class="button_smaller button2" type="submit" value="Submit new unit">
 		</form>
 

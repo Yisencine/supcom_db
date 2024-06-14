@@ -3,7 +3,7 @@ which allows the user to see and edit stats and matchup data for Tech 1 land uni
 
 TARGET_DATABASE_FILE = "supcom.db"
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import sqlite3
 
 app = Flask(__name__)
@@ -17,9 +17,16 @@ def not_found(e):
 @app.route('/')
 def home():
 	#<section class ="two-column">
-	return render_template('home.html')
+	with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
+		cursor = connection.cursor()
+		query = """SELECT Units_T1_Land.Name, Units_T1_Land.Health, Units_T1_Land.DPS, Units_T1_Land.Mass_Cost, Units_T1_Land.Energy_Cost, 
+		Units_T1_Land.Range, Units_T1_Land.Speed, Faction.Faction_Name FROM Units_T1_Land JOIN Faction ON Units_T1_Land.Faction_ID=Faction.ID;"""
+		cursor.execute(query)
+		results = cursor.fetchall()
 
-	#</section>
+		return render_template('home.html')
+
+		#</section>
 
 
 @app.route('/counters')
@@ -125,6 +132,15 @@ def add_units():
 def form():
 
 	response = request.form
+
+	with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
+		cursor = connection.cursor()
+		query = "INSERT INTO Units_T1_Land(Name, Health, DPS, Mass_Cost, Energy_Cost, Range, Speed, Faction_ID) VALUES (?,?,?,?,?,?,?,?)"
+		cursor.execute(query, (response["Name"], response["Health"], response["DPS"], response["Mass_Cost"], response["Energy_Cost"], response["Range"], response["Speed"], response["Faction_ID"]))
+		connection.commit()
+
+	
+	print(response["Faction_ID"])
 	# this function will allow the user to add their own custom units and hopefully even add their own custom matchup data to the database
 
 	return render_template('add_units.html')

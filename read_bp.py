@@ -106,7 +106,8 @@ def show_units(connection, bp):
 	try:
 		cursor = connection.cursor()
 
-		query = "SELECT Units_T1_Land.Name, Units_T1_Land.Health, Units_T1_Land.DPS, Units_T1_Land.Mass_Cost, Units_T1_Land.Energy_Cost, Units_T1_Land.Range, Units_T1_Land.Speed, Faction.Faction_Name FROM Units_T1_Land JOIN Faction ON Units_T1_Land.Faction_ID=Faction.ID;"
+		query = """SELECT Units_T1_Land.Name, Units_T1_Land.Health, Units_T1_Land.DPS, Units_T1_Land.Mass_Cost, Units_T1_Land.Energy_Cost, 
+	Units_T1_Land.Range, Units_T1_Land.Speed, Faction.Faction_Name FROM Units_T1_Land JOIN Faction ON Units_T1_Land.Faction_ID=Faction.ID;"""
 		cursor.execute(query)
 		results = cursor.fetchall()
 		print(f"\n{'NAME':<40}{'HEALTH':<20}{'DAMAGE/SECOND':<20}{'MASS COST':<20}{'ENERGY COST':<20}{'WEAPON RANGE':<20}{'MAX SPEED':<20}{'FACTION':<20}\n")
@@ -234,7 +235,7 @@ def add_unit(connection, bp):
 	try:
 		cursor = connection.cursor()
 		query = "INSERT INTO Units_T1_Land(Name, Health, DPS, Mass_Cost, Energy_Cost, Range, Speed, Faction_ID) VALUES (?,?,?,?,?,?,?,?)"
-		cursor.execute(query, (new_unit_name, new_unit_HP, new_unit_DPS, new_unit_MC, new_unit_MC, new_unit_WR, new_unit_MS, new_unit_FAC))
+		cursor.execute(query, (new_unit_name, new_unit_HP, new_unit_DPS, new_unit_MC, new_unit_EC, new_unit_WR, new_unit_MS, new_unit_FAC))
 		connection.commit()
 		print("\nUnit was added successfully!\n")
 	except Exception as error:
