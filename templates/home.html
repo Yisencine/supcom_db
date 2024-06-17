@@ -4,21 +4,31 @@
         <p>Welcome to the custom Yisen Supreme Commander Database for Tech 1 land units. <br><br> Here is a table which displays the units featured:</p>
 
   <table>
+
+
   <tr>
     <th>Unit Name</th>
     <th>Unit HP</th>
     <th>Unit DPS</th>
+    <th>Mass Cost</th>
+    <th>Energy Cost</th>
+    <th>Range</th>
+    <th>Speed</th>
+    <th>Faction</th>
   </tr>
+  {% for unit in units %}
+
   <tr>
-    <td>Percival</td>
-    <td>20</td>
-    <td>60</td>
+    <td>{{unit[0]}}</td>
+    <td>{{unit[1]}}</td>
+    <td>{{unit[2]}}</td>
+    <td>{{unit[3]}}</td>
+    <td>{{unit[4]}}</td>
+    <td>{{unit[5]}}</td>
+    <td>{{unit[6]}}</td>
+    <td>{{unit[7]}}</td>
   </tr>
-  <tr>
-    <td>Titan</td>
-    <td>14</td>
-    <td>10</td>
-  </tr>
+  {% endfor %}
 </table>
 
 {% endblock %}

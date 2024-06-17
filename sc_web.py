@@ -3,7 +3,7 @@ which allows the user to see and edit stats and matchup data for Tech 1 land uni
 
 TARGET_DATABASE_FILE = "supcom.db"
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 import sqlite3
 
 app = Flask(__name__)
@@ -24,7 +24,7 @@ def home():
 		cursor.execute(query)
 		results = cursor.fetchall()
 
-		return render_template('home.html')
+		return render_template('home.html', units = results)
 
 		#</section>
 
@@ -129,7 +129,7 @@ def add_units():
 	return render_template('add_units.html')
 
 @app.route('/add_units', methods = ['POST'])
-def form():
+def add_units_submitted():
 
 	response = request.form
 
@@ -149,9 +149,24 @@ def form():
 def delete_units():
 
 	# this function will allow the user to delete pre-existing and added unit entries, and hopefully corresponding matchup data too
+	with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
+		cursor = connection.cursor()
+		query = "SELECT Units_T1_Land.ID, Units_T1_Land.Name FROM Units_T1_Land;"
+		cursor.execute(query)
+		results = cursor.fetchall()
 
-	return render_template('delete_units.html')
+	return render_template('delete_units.html', units = results)
 
+@app.route('/delete_units', methods = ['POST'])
+def delete_units_submitted():
+
+	with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
+		cursor = connection.cursor()
+		response = request.form
+		query = "DELETE FROM Units_T1_Land WHERE ID = ?"
+		cursor.execute(query, (response["unit_name"],))
+
+	return redirect("/delete_units")
 
 if __name__ == '__main__':
 	# runs the main function thing
