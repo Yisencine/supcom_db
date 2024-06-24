@@ -34,5 +34,21 @@
 		  
 		  <input class="button_smaller button2" type="submit" value="Submit new unit">
 		</form>
+		  <p>Here you can add counters for your units:</p>
+
+		  {% for counter in range(counters) %}
+
+			  <label for="counter_name">Counter name:</label><br>
+			  <input type="text" id="x" name="counter_name{{counter}}" value=""><br>
+
+			  <label for="counter_description">Counter description:</label><br>
+			  <input type="text" id="x" name="counter_description{{counter}}" value=""><br><br>
+
+		  {% endfor %}
+
+		 <form method="post">
+		 	<hidden value="add counter">
+		  <input id="bottom" class="button_smaller button2" type="submit" value="+ (plus)" name="add counter">
+		</form>
 
 {% endblock %}

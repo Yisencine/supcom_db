@@ -3,12 +3,16 @@ which allows the user to see and edit stats and matchup data for Tech 1 land uni
 
 TARGET_DATABASE_FILE = "supcom.db"
 
+class data:
+	counters = 0
+	reset_counters = True
+
 from flask import Flask, render_template, request, redirect
 import sqlite3
 
 app = Flask(__name__)
 
-@app.errorhandler(404) 
+@app.errorhandler(404)
 def not_found(e): 
 	# inbuilt function which takes error as parameter - we can have our error 404 page here.
   
@@ -121,29 +125,46 @@ def filter_factions(fac):
 
 	return render_template('filter_factions.html', fac = fac, data=results)
 
+
 @app.route('/add_units')
 def add_units():
+	if data.reset_counters:
+		 data.counters = 0
+	data.reset_counters = True
 
 	# this function will allow the user to add their own custom units and hopefully even add their own custom matchup data to the database
 
-	return render_template('add_units.html')
+	return render_template('add_units.html', counters=data.counters)
+
 
 @app.route('/add_units', methods = ['POST'])
 def add_units_submitted():
 
-	response = request.form
+	response = list(request.form)
+	if response[0] == "add counter":  # user wants to add a counter
+		data.counters += 1
+	else:
+		response = request.form
+		data.counters = 0
+		with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
+			cursor = connection.cursor()
+			query = "INSERT INTO Units_T1_Land(Name, Health, DPS, Mass_Cost, Energy_Cost, Range, Speed, Faction_ID) VALUES (?,?,?,?,?,?,?,?)"
+			cursor.execute(query, (response["Name"], response["Health"], response["DPS"], response["Mass_Cost"], response["Energy_Cost"], response["Range"], response["Speed"], response["Faction_ID"]))
+			connection.commit()
 
-	with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
-		cursor = connection.cursor()
-		query = "INSERT INTO Units_T1_Land(Name, Health, DPS, Mass_Cost, Energy_Cost, Range, Speed, Faction_ID) VALUES (?,?,?,?,?,?,?,?)"
-		cursor.execute(query, (response["Name"], response["Health"], response["DPS"], response["Mass_Cost"], response["Energy_Cost"], response["Range"], response["Speed"], response["Faction_ID"]))
-		connection.commit()
 
 	
-	print(response["Faction_ID"])
-	# this function will allow the user to add their own custom units and hopefully even add their own custom matchup data to the database
 
-	return render_template('add_units.html')
+
+
+	
+	# print(response["Faction_ID"])
+	# this function will allow the user to add their own custom units and hopefully even add their own custom matchup data to the database
+	# return render_template('add_units.html', counters=data.counters)
+
+	data.reset_counters = False
+
+	return redirect("add_units#bottom")
 
 @app.route('/delete_units')
 def delete_units():
