@@ -2,21 +2,24 @@
 {% block content %}
 		<h2> ADD UNITS PAGE </h2>
         <p>Here you can add units to the database (WIP feauture):</p>
+
+       <!--  <p>{{error}}</p> -->
+       
         <form action="add_units", method="post">
 		  <label for="Name">New unit name:</label><br>
-		  <input type="text" id="x" name="Name" value="John Doe"><br>
+		  <input type="text" id="x" name="Name" value="{{response['Name']}}"><br>
 		  <label for="Health">Health:</label><br>
-		  <input type="text" id="x" name="Health" value=""><br>
+		  <input type="text" id="x" name="Health" value="{{response['Health']}}"><br>
 		  <label for="DPS">Damage per second:</label><br>
-		  <input type="text" id="x" name="DPS" value=""><br>
+		  <input type="text" id="x" name="DPS" value="{{response['DPS']}}"><br>
 		  <label for="Mass_Cost">Mass cost:</label><br>
-		  <input type="text" id="x" name="Mass_Cost" value=""><br>
+		  <input type="text" id="x" name="Mass_Cost" value="{{response['Mass_Cost']}}"><br>
 		  <label for="Energy_Cost">Energy cost:</label><br>
-		  <input type="text" id="x" name="Energy_Cost" value=""><br>
+		  <input type="text" id="x" name="Energy_Cost" value="{{response['Energy_Cost']}}"><br>
 		  <label for="Range">Weapon range (max):</label><br>
-		  <input type="text" id="x" name="Range" value=""><br>
+		  <input type="text" id="x" name="Range" value="{{response['Range']}}"><br>
 		  <label for="Speed">Movement speed:</label><br>
-		  <input type="text" id="x" name="Speed" value=""><br><br>
+		  <input type="text" id="x" name="Speed" value="{{response['Speed']}}"><br><br>
 
 		  <label for="Faction_ID">Faction:</label><br>
 
@@ -33,18 +36,25 @@
 		  <label for="Aeon">Aeon</label><br><br>
 		  
 		  <input class="button_smaller button2" type="submit" value="Submit new unit">
-		</form>
+		
 		  <p>Here you can add counters for your units:</p>
 
 		  {% for counter in range(counters) %}
 
-			  <label for="counter_name">Counter name:</label><br>
-			  <input type="text" id="x" name="counter_name{{counter}}" value=""><br>
+			  <label for="counter_name">Counter:</label><br>
+			<!--   <input type="text" id="x" name="counter_name{{counter}}" value=""><br> -->
+			  <select id ="x" name = "counter_name{{counter}}"> 
+			  {% for unit in units %}
+			  <option value = "{{unit[0]}}"> {{unit[1]}} </option>
+			  {% endfor %}
+			  </select>
+			  <br>
 
 			  <label for="counter_description">Counter description:</label><br>
 			  <input type="text" id="x" name="counter_description{{counter}}" value=""><br><br>
 
 		  {% endfor %}
+		  </form>
 
 		 <form method="post">
 		 	<hidden value="add counter">

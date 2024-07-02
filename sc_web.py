@@ -6,9 +6,31 @@ TARGET_DATABASE_FILE = "supcom.db"
 class data:
 	counters = 0
 	reset_counters = True
+	add_units_submitted = False
+	response = {}
 
 from flask import Flask, render_template, request, redirect
 import sqlite3
+
+def error_proofing(user_value, lower_bound, upper_bound):
+
+	# function that sanitises user input to make sure that they enter a valid number into parts of my program which require integers, without crashing the program
+	try:
+		int(user_value)
+
+		if not len(user_value):
+			print("too short")
+			return False
+
+		if int(user_value) > upper_bound or int(user_value) < lower_bound:
+			print("boundary error", user_value, upper_bound, lower_bound)
+			return False
+			
+		return True
+	except:
+		print("no number")
+		return False
+
 
 app = Flask(__name__)
 
@@ -38,18 +60,21 @@ def unit_counters():
 
 	
 	# this function allows the user to click buttons which correspond to a unit, and it shows the user the counters to the unit.
+	try: 
+		with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
 
-	with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
-
-		cursor = connection.cursor()
+			cursor = connection.cursor()
 
 
-		query = "SELECT Units_T1_Land.ID, Units_T1_Land.Name FROM Units_T1_Land;"
+			query = "SELECT Units_T1_Land.ID, Units_T1_Land.Name FROM Units_T1_Land;"
 
-		cursor.execute(query)
-		results = cursor.fetchall()
+			cursor.execute(query)
+			results = cursor.fetchall()
 
-		return render_template('counters.html', data=results)
+			return render_template('counters.html', data=results)
+
+	except:
+		return render_template("404.html") 
 
 
 
@@ -134,27 +159,84 @@ def add_units():
 
 	# this function will allow the user to add their own custom units and hopefully even add their own custom matchup data to the database
 
-	return render_template('add_units.html', counters=data.counters)
+	with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
+		cursor = connection.cursor()
+		query = "SELECT Units_T1_Land.ID, Units_T1_Land.Name FROM Units_T1_Land;"
+		cursor.execute(query)
+		results = cursor.fetchall()
+
+
+
+
+	return render_template('add_units.html', counters=data.counters, units = results, response=data.response)
 
 
 @app.route('/add_units', methods = ['POST'])
 def add_units_submitted():
+
+	submission_error = False
+	
 
 	response = list(request.form)
 	if response[0] == "add counter":  # user wants to add a counter
 		data.counters += 1
 	else:
 		response = request.form
-		data.counters = 0
+		print(response)
+
+
+		if not error_proofing(response['Health'], 0, 50):
+			submission_error = True
+		if not error_proofing(response['DPS'], 0, 10000):
+			submission_error = True
+		if not error_proofing(response['Mass_Cost'], 0, 500000):
+			submission_error = True
+		if not error_proofing(response['Energy_Cost'], 0, 20000000):
+			submission_error = True
+		if not error_proofing(response['Range'], 0, 250):
+			submission_error = True
+		if not error_proofing(response['Speed'], 0, 50):
+			submission_error = True
+
+			print(response)
+
+			# need to stop fac ID input from crashing but also tell the user what is wrong.
+		if not 'Faction_ID' in response:
+			submission_error = True
+		elif not error_proofing(response['Faction_ID'], 0, 5):
+			submission_error = True
+
+		if submission_error:
+			data.reset_counters = False
+			data.response = response
+			return redirect("add_units#bottom")
+			submission_error = False
+		
+			# user_input_valid_check(1, 4, response)
+
 		with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
 			cursor = connection.cursor()
 			query = "INSERT INTO Units_T1_Land(Name, Health, DPS, Mass_Cost, Energy_Cost, Range, Speed, Faction_ID) VALUES (?,?,?,?,?,?,?,?)"
 			cursor.execute(query, (response["Name"], response["Health"], response["DPS"], response["Mass_Cost"], response["Energy_Cost"], response["Range"], response["Speed"], response["Faction_ID"]))
+
+			unit_name = response["Name"]
+			query = f"SELECT ID FROM Units_T1_Land WHERE Name = '{unit_name}';"
+			cursor.execute(query)
+			new_id = cursor.fetchall()[0][0]
+			
+			
+
+
+			# all info gets reset when + button gets clicked
+
+			for counter in range(data.counters):
+				query2 = "INSERT INTO Matchup(Unit_for_ID, Unit_against_ID, Description) VALUES (?,?,?)"
+				cursor.execute(query2, (new_id, response[f"counter_name{counter}"], response[f"counter_description{counter}"]))
+
 			connection.commit()
+		data.counters = 0
 
-
-	
-
+	response = request.form
 
 
 	
@@ -163,6 +245,7 @@ def add_units_submitted():
 	# return render_template('add_units.html', counters=data.counters)
 
 	data.reset_counters = False
+	data.response = response
 
 	return redirect("add_units#bottom")
 
