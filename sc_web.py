@@ -179,13 +179,15 @@ def add_units_submitted():
 
 	response = list(request.form)
 	if response[0] == "add counter":  # user wants to add a counter
+		data.reset_counters = False
+		data.response = response
 		data.counters += 1
 	else:
 		response = request.form
 		print(response)
 
 
-		if not error_proofing(response['Health'], 0, 50):
+		if not error_proofing(response['Health'], 0, 200000):
 			submission_error = True
 		if not error_proofing(response['DPS'], 0, 10000):
 			submission_error = True
@@ -210,9 +212,6 @@ def add_units_submitted():
 			data.reset_counters = False
 			data.response = response
 			return redirect("add_units#bottom")
-			submission_error = False
-		
-			# user_input_valid_check(1, 4, response)
 
 		with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
 			cursor = connection.cursor()
@@ -224,9 +223,6 @@ def add_units_submitted():
 			cursor.execute(query)
 			new_id = cursor.fetchall()[0][0]
 			
-			
-
-
 			# all info gets reset when + button gets clicked
 
 			for counter in range(data.counters):
@@ -243,9 +239,12 @@ def add_units_submitted():
 	# print(response["Faction_ID"])
 	# this function will allow the user to add their own custom units and hopefully even add their own custom matchup data to the database
 	# return render_template('add_units.html', counters=data.counters)
+	if submission_error:
+		data.reset_counters = False
+		data.response = response
+	else:
+		data.response = {}
 
-	data.reset_counters = False
-	data.response = response
 
 	return redirect("add_units#bottom")
 
@@ -268,6 +267,8 @@ def delete_units_submitted():
 		cursor = connection.cursor()
 		response = request.form
 		query = "DELETE FROM Units_T1_Land WHERE ID = ?"
+		cursor.execute(query, (response["unit_name"],))
+		query = "DELETE FROM Matchup WHERE Unit_for_ID = ?"
 		cursor.execute(query, (response["unit_name"],))
 
 	return redirect("/delete_units")
