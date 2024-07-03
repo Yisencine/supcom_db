@@ -4,7 +4,7 @@
         <p>Here you can add units to the database (WIP feauture):</p>
 
        <!--  <p>{{error}}</p> -->
-       
+
         <form action="add_units", method="post">
 		  <label for="Name">New unit name:</label><br>
 		  <input type="text" id="x" name="Name" value="{{response['Name']}}"><br>
@@ -34,10 +34,11 @@
 		
 		  <input type="radio" id="3" name="Faction_ID" value="3">
 		  <label for="Aeon">Aeon</label><br><br>
-		  
-		  <input class="button_smaller button2" type="submit" value="Submit new unit">
 		
 		  <p>Here you can add counters for your units:</p>
+
+		 <hidden value="add counter">
+		 <input id="bottom" class="button_smaller button2" type="submit" value="Add new counter" name="add counter"> <br><br>
 
 		  {% for counter in range(counters) %}
 
@@ -54,11 +55,9 @@
 			  <input type="text" id="x" name="counter_description{{counter}}" value=""><br><br>
 
 		  {% endfor %}
-		  </form>
 
-		 <form method="post">
-		 	<hidden value="add counter">
-		  <input id="bottom" class="button_smaller button2" type="submit" value="+ (plus)" name="add counter">
+		  <input class="button_smaller button2" type="submit" value="Finalise & submit new unit">
+
 		</form>
 
 {% endblock %}

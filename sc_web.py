@@ -175,10 +175,9 @@ def add_units():
 def add_units_submitted():
 
 	submission_error = False
-	
 
-	response = list(request.form)
-	if response[0] == "add counter":  # user wants to add a counter
+	response = request.form
+	if "add counter" in response:  # user wants to add a counter
 		data.reset_counters = False
 		data.response = response
 		data.counters += 1
@@ -230,20 +229,19 @@ def add_units_submitted():
 				cursor.execute(query2, (new_id, response[f"counter_name{counter}"], response[f"counter_description{counter}"]))
 
 			connection.commit()
+
 		data.counters = 0
-
-	response = request.form
-
+		data.response = {}
 
 	
 	# print(response["Faction_ID"])
 	# this function will allow the user to add their own custom units and hopefully even add their own custom matchup data to the database
 	# return render_template('add_units.html', counters=data.counters)
-	if submission_error:
-		data.reset_counters = False
-		data.response = response
-	else:
-		data.response = {}
+	# if submission_error:
+	# 	data.reset_counters = False
+	# 	data.response = response
+	# else:
+	# 	data.response = {}
 
 
 	return redirect("add_units#bottom")
