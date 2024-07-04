@@ -178,9 +178,10 @@ a {
 	font-weight: lighter;
 	font-size: 12px;
 	background-color: #5b6282;
-	padding: 3px 6px;
+	padding: 3px 8px;
 	border-style: solid;
 	border-width: 1.5px;
+	border-radius: 6px;
 }
 
 

@@ -23,16 +23,16 @@
 
 		  <label for="Faction_ID">Faction:</label><br>
 
-		  <input type="radio" id="4" name="Faction_ID" value="4">
+		  <input type="radio" id="4" name="Faction_ID" value="4" {% if response['Faction_ID'] == '4' %} checked="true" {% endif %}>
 		  <label for="Seraphim">Seraphim</label><br>
 
-		  <input type="radio" id="1" name="Faction_ID" value="1">
+		  <input type="radio" id="1" name="Faction_ID" value="1" {% if response['Faction_ID'] == '1' %} checked="true" {% endif %}>
 		  <label for="UEF">UEF</label><br>
 		  
-		  <input type="radio" id="2" name="Faction_ID" value="2">
+		  <input type="radio" id="2" name="Faction_ID" value="2" {% if response['Faction_ID'] == '2' %} checked="true" {% endif %}>
 		  <label for="Cybran">Cybran</label><br>
 		
-		  <input type="radio" id="3" name="Faction_ID" value="3">
+		  <input type="radio" id="3" name="Faction_ID" value="3" {% if response['Faction_ID'] == '3' %} checked="true" {% endif %}>
 		  <label for="Aeon">Aeon</label><br><br>
 		
 		  <p>Here you can add counters for your units:</p>

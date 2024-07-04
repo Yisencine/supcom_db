@@ -153,6 +153,7 @@ def filter_factions(fac):
 
 @app.route('/add_units')
 def add_units():
+	print(data.response)
 	if data.reset_counters:
 		 data.counters = 0
 	data.reset_counters = True
