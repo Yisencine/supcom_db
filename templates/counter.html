@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 		<a href="/counters">
-		    <button class="back_button button3" type="button">SELECT A DIFFERENT UNIT</button>
+		    <button class="back_button back_hover" type="button">SELECT A DIFFERENT UNIT</button>
 		</a>
 	<h2> Chosen Unit: {{ data[0][0] }}</h2>
     {% for item in data %}

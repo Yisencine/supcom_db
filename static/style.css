@@ -18,11 +18,11 @@ html, body {
 }
 
 :root {
-  --col_1: #4b6a9c;
-  --col_2: #0F0F0F;
+  --col_1: #D77A61;
+  --col_2: #474747;
   --col_3: #D8D8D8;
-  --col_4: #5c5c5c;
-  --col_5: #4b6a9c;
+  --col_4: #707070;
+  --col_5: #D77A61;
 }
 
 /*
@@ -39,7 +39,7 @@ html, body {
 #0F0F0F = night
 #D8D8D8 = timberwolf
 #827D7C = gray
-#989DBB = cool blue
+#989DBB = cool 
 
 */
 
@@ -55,18 +55,20 @@ body {
 
 
 table, th, td {
-  border: 5px solid var(--col_1);
+  
   border-radius: 10px;
   border-spacing: 4px;
-  border-style: solid;
   font-size: 15px;
  /* border-collapse: collapse;*/
-  color: #0F0F0F;
+  color: var(--col_2);
 
 }
+
 th, td {
   background-color: var(--col_3);
   padding: 6px 20px;
+  border: 3px solid var(--col_2);
+  border-style: solid;
 
 }
 
@@ -114,7 +116,27 @@ a {
 .back_button {
 
   font-family: Lucida Console, monospace;
-  border: none;
+  border: 2px solid var(--col_2);
+  font-weight: bold;
+  border-radius: 12px;
+  color: var(--col_2);
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  /* display: block; */
+  display: inline-block;
+
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  background-color: var(--col_3);
+}
+
+.back_hover:hover {
+
+  font-family: Lucida Console, monospace;
+  border: 2px solid var(--col_2);
   font-weight: bold;
   border-radius: 12px;
   color: var(--col_3);
@@ -128,27 +150,30 @@ a {
   margin: 4px 2px;
   transition-duration: 0.4s;
   cursor: pointer;
+  background-color: var(--col_5);
+
 }
 
 
 .button1 {
-  background-color: var(--col_3);
-  color: var(--col_2);
-  border: 2px solid var(--col_5);
-  box-shadow: 0 4px 8px 0 rgba(20,20,20,0.4), 0 6px 20px 0 rgba(0,0,0,0.19);
+  background-color: var(--col_5);
+  color: var(--col_3);
+  box-shadow: 0 12px 16px 0 rgba(40,40,40,0.9), 0 17px 50px 0 rgba(0,0,0,0.19);
   
 }
 
 .button1:hover {
-  background-color: var(--col_5);
-  color: var(--col_3);
-  box-shadow: 0 12px 16px 0 rgba(40,40,40,0.9), 0 17px 50px 0 rgba(0,0,0,0.19);
+  background-color: var(--col_3);
+  color: var(--col_2);
+  border: 2px solid var(--col_5);
+  box-shadow: 0 4px 8px 0 rgba(20,20,20,0.4), 0 6px 20px 0 rgba(0,0,0,0.19);
+
 }
 
 .button2 {
   background-color: var(--col_3);
   color: var(--col_2);
-  border: 2px solid var(--col_5);
+  border: 2px solid var(--col_2);
 }
 
 .button2:hover {
@@ -156,13 +181,13 @@ a {
   color: var(--col_3);
 }
 
-.button3 {
+.button3:hover {
   background-color: var(--col_1) ;
   color: var(--col_2);
   border: 2px solid var(--col_3);
 }
 
-.button3:hover {
+.button3 {
   background-color: var(--col_1) ;
   color: var(--col_3);
 }
@@ -193,7 +218,8 @@ a {
 	display: inline-block;
 	font-weight: lighter;
 	font-size: 12px;
-	background-color: var(--col_5);
+	color: var(--col_2);
+	background-color: var(--col_3);
 	padding: 3px 8px;
 	border-style: solid;
 	border-width: 1.5px;
