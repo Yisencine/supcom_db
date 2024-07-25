@@ -20,12 +20,49 @@ html, body {
 :root {
   --col_1: #D77A61;
   --col_2: #474747;
-  --col_3: #D8D8D8;
-  --col_4: #707070;
+  --col_3: #F7ECE1;
+  --col_4: #3c4766;
   --col_5: #D77A61;
 }
 
 /*
+colour palettes:
+
+- new dark blue + sienna combo -
+:root {
+  --col_1: #D77A61;
+  --col_2: #474747;
+  --col_3: #F7ECE1;
+  --col_4: #3c4766;
+  --col_5: #D77A61;
+}
+
+- old dark blue + sienna combo -
+:root {
+  --col_1: #D77A61;
+  --col_2: #474747;
+  --col_3: #F7ECE1;
+  --col_4: #454C5F;
+  --col_5: #D77A61;
+}
+
+- blue gray version -
+:root {
+  --col_1: #818AA3;
+  --col_2: #474747;
+  --col_3: #F7ECE1;
+  --col_4: #707070;
+  --col_5: #818AA3;
+}
+
+- orange/sienna version -
+:root {
+  --col_1: #D77A61;
+  --col_2: #474747;
+  --col_3: #D8D8D8;
+  --col_4: #707070;
+  --col_5: #D77A61;
+}
 
 #F7FFF7 = mint cream (greeny)
 #F7ECE1 = linen (biegy)
