@@ -34,13 +34,14 @@ def add_bp_to_db(connection, bp):
 
 	try:
 		cursor = connection.cursor()
-		query = "INSERT INTO Units_T1_Land(Name, Health, DPS, Mass_Cost, Energy_Cost, Range, Speed, Faction_ID) VALUES (?,?,?,?,?,?,?,?)"
-		cursor.execute(query, (bp.faction + " " + bp.name, bp.health, bp.DPS, bp.mass_cost, bp.energy_cost, bp.range, bp.speed, bp.faction_ID))
+		query = "INSERT INTO Units_T1_Land(ID, Name, Health, DPS, Mass_Cost, Energy_Cost, Range, Speed, Faction_ID) VALUES (?,?,?,?,?,?,?,?,?)"
+		# cursor.execute(query, (bp.id, bp.name + " " + bp.faction, + bp.health, bp.DPS, bp.mass_cost, bp.energy_cost, bp.range, bp.speed, bp.faction_ID))
+		cursor.execute(query, (bp.id, bp.name, bp.health, bp.DPS, bp.mass_cost, bp.energy_cost, bp.range, bp.speed, bp.faction_ID))
 		connection.commit()
-		print("\n Units (BP) were added successfully to database!\n")
+		# print("\n Units (BP) were added successfully to database!\n")
 	except Exception as error:
 		traceback.print_exc()
-		print("\nUh oh, couldn't ADD_BP_TO_DB, something went wrong!")
+		# print("\nUh oh, couldn't ADD_BP_TO_DB, something went wrong!")
 
 
 def test_print(connection, bp):
@@ -303,6 +304,8 @@ class Blueprint:
 		"S": "Navy",
 		"B": "Building",
 	}
+
+
 	def __init__(self, file_path, file_name):
 		#get some info from the unit code (in the file name)
 		self.code = file_name.split("_")[0]
@@ -335,6 +338,8 @@ class Blueprint:
 		self.is_engi = False
 		self.is_test_unit = False
 		self.faction_ID
+		self.id = 0
+		self.is_PD = False
 
 		#open the files based on the OS that the user is using, in read mode rather than write mode
 		with open(os.path.join(file_path, file_name), "r") as f:
@@ -346,12 +351,23 @@ class Blueprint:
 
 			if line.startswith("Description"):
 				desc = self.value_from_line(line)
+
 				try:
 					name = desc.split(">")[1]
 					name = name.split("\"")[0]
-					self.name = name
 				except IndexError:
 					self.name = desc
+
+			if line.startswith("UnitName"):
+				desc = self.value_from_line(line)
+
+				try:
+					personal_name = desc.split(">")[1]
+					personal_name = personal_name.split("\"")[0]
+					self.name = f"{personal_name} ({name})"
+					#print(self.name)
+				except IndexError:
+					self.personal_name = desc
 
 			# all of these elif statements scan the file for information/statistics which can then be assigned to variables and used within the class
 			elif line.startswith("BuildCostEnergy"):
@@ -402,6 +418,10 @@ class Blueprint:
 
 			elif "test unit" in self.name.lower():
 				self.is_test_unit = True
+
+			elif "point defense" in self.name.lower(): 
+				# print("is pd")
+				self.is_PD = True
 			
 
 			elif line.startswith("RateOfFire = ") and not line.startswith("RateOfFire = {"):
@@ -425,7 +445,7 @@ class Blueprint:
 		return value
 
 	def __repr__(self):
-		return f"{self.code} ({self.faction} {self.name}): {self.mass_cost} mass, {self.energy_cost} energy, {self.health}HP, {self.speed} Speed, {self.DPS}DPS, {self.range} Range, Tech {self.tech_level}, {self.field}, {self.faction_ID}."
+		return f"{self.code} ({self.name} {self.faction}): {self.mass_cost} mass, {self.energy_cost} energy, {self.health}HP, {self.speed} Speed, {self.DPS}DPS, {self.range} Range, Tech {self.tech_level}, {self.field}, {self.faction_ID}."
 
 def main():
 	
@@ -451,13 +471,24 @@ def main():
 		
 		# this filters for and prints the chosen selection of units from the database which we are using 
 
-		if bp.tech_level == 1 and bp.unit_type == "Land" and bp.is_engi == False and bp.is_test_unit == False or bp.name == "Point Defense" and bp.tech_level == 1:
+		if bp.tech_level == 1 and bp.unit_type == "Land" and bp.is_engi == False and bp.is_test_unit == False or bp.is_PD == True and bp.tech_level == 1:
 		#if bp.faction == "UEF" and "Experimental" in bp.name:
 			all_bps[bp.code] = bp
 			# print(bp)
 
 	while True:
 		with sqlite3.connect(TARGET_DATABASE_FILE) as connection:
+			cursor = connection.cursor()
+			id = 0 
+
+			wipe = "DELETE FROM Units_T1_Land;"
+			cursor.execute(wipe)
+
+			for bp in all_bps.values():
+				if bp.tech_level == 1 and bp.unit_type == "Land" and bp.is_engi == False or bp.is_PD == True and bp.tech_level == 1:
+					id += 1
+					bp.id = id
+					add_bp_to_db(connection, bp)
 
 			# makes the connection to the chosen database file and then prints all the units chosen through a filter
 			user_input = input("\n- [0] test print SELECT * FROM Units_T1_Land\n- [1] Print all units\n- [2] Check the counters for a chosen unit\n- [3] Sort units by a chosen statistic\n- [4] Filter units by chosen faction\n- [5] Insert fully custom unit\n- [6] Delete chosen unit\n- [7] Exit database\n\nEnter Here: ")
@@ -508,10 +539,7 @@ def main():
 
 			#this uses the same filter as above to decide which units get added to the SQL database (the add_bp_to_db function is commented out while not under use)
 
-			for bp in all_bps.values():
-				if bp.tech_level == 1 and bp.unit_type == "Land" and bp.is_engi == False or bp.name == "Point Defense" and bp.tech_level == 1:
-					pass
-					#add_bp_to_db(connection, bp)
+			
 					
 
 			#print(all_bps["UEL0001"].name)
