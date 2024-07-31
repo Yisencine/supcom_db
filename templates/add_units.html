@@ -5,6 +5,11 @@
 
        <!--  <p>{{error}}</p> -->
 
+       <div class="alert">
+		  <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+		  All stat entries must be numbers, not text. Check the "INFO" help page for specific rules on allowed stat values. This popup can be closed.
+		</div>
+
         <form action="add_units", method="post">
 		  <label for="Name">New unit name:</label><br>
 		  <input type="text" id="x" name="Name" value="{{response['Name']}}"><br>

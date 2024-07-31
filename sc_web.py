@@ -55,6 +55,14 @@ def home():
 		#</section>
 
 
+@app.route('/boundary')
+def boundary():
+
+		return render_template('boundary.html')
+
+		#</section>
+
+
 @app.route('/counters')
 def unit_counters():
 

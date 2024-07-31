@@ -40,8 +40,15 @@
 		<p> SORTED UNITS DISPLAY:</p>
 
          {% for unit in data %}
+         {% if stat == 0 %}
+
+         <p class="greybox" >  {{unit[0]}} </p> 
+
+         {% else %}
 
     	 <p class="greybox" >  {{unit[0]}} ({{unit[stat]}}) </p> 
+
+    	 {% endif %}
 
     	 {% endfor %}
 

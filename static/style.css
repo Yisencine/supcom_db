@@ -28,6 +28,8 @@ html, body {
 /*
 colour palettes:
 
+
+
 - new dark blue + sienna combo -
 :root {
   --col_1: #D77A61;
@@ -114,6 +116,34 @@ a {
   text-decoration: inherit;
 }
 
+/* The alert message box */
+.alert {
+  padding: 15px;
+  background-color: #e34646; 
+  color: white;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  font-size: 24px;
+  box-shadow: 0 12px 16px 0 rgba(40,40,40,0.9), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+/* The close button */
+.closebtn {
+  margin-left: 10px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 40px;
+  line-height: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* When moving the mouse over the close button */
+.closebtn:hover {
+  color: black;
+}
+
 .button {
   font-family: Lucida Console, monospace;
   font-weight: bold;
@@ -124,7 +154,7 @@ a {
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 22px;
+  font-size: 20px;
   margin: 4px 2px;
   transition-duration: 0.4s;
   cursor: pointer;
